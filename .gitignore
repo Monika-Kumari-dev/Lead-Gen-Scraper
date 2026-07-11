@@ -10,4 +10,4 @@ frontend/build/
 
 # Editor / OS
 .DS_Store
-.vscode/
+.vscode/page_dump.html
