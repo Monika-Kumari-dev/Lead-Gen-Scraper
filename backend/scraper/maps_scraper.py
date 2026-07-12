@@ -110,9 +110,11 @@ def search_maps(query: str, region: str, limiter: RateLimiter, driver=None):
                 break
             seen_count = cards_now
 
+        # Cards are already loaded in the DOM at this point - reading their
+        # text/attributes is local parsing, not a new network request, so
+        # no rate-limit delay is needed here (unlike page loads above).
         cards = feed.find_elements(By.CSS_SELECTOR, CARD_SELECTOR)
         for card in cards:
-            limiter.wait()
             lead = _parse_card(card)
             if lead["company_name"]:
                 lead["region"] = region
