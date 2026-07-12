@@ -53,7 +53,7 @@ DIRECTORY_SOURCES = {
         {"name": "Gulf Business Directory", "url": "https://gulfbusiness.tradeholding.com/", "category_path": ""},
     ],
     "Europe": [
-        {"name": "Europages", "url": "https://www.europages.com/", "category_path": "bs/chemicals-pharmaceuticals/pharmaceuticals"},
+        {"name": "Europages", "url": "https://www.europages.co.uk/", "category_path": "bs/chemicals-pharmaceuticals/pharmaceuticals"},
         {"name": "Kompass Germany", "url": "https://de.kompass.com/", "category_path": ""},
         {"name": "Kompass France", "url": "https://fr.kompass.com/", "category_path": ""},
     ],

@@ -122,10 +122,58 @@ def parse_exportersindia_page(html: str, source_url: str):
     return leads
 
 
+def parse_biopharmguy_page(html: str, source_url: str):
+    """
+    Parse a BiopharmGuy company-by-location listing page.
+
+    Each row is <tr> with three <td>: company, location, description.
+    The company <td> has 1-2 <a> tags - if 2, the last one is the
+    external company website (the first is an internal profile link).
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    leads = []
+
+    for row in soup.select("table.rightLinks tbody tr"):
+        company_td = row.select_one("td.company")
+        location_td = row.select_one("td.location")
+        if not company_td:
+            continue
+
+        links = company_td.select("a")
+        if not links:
+            continue
+
+        company_link = links[-1]
+        company_name = company_link.get_text(strip=True)
+        if not company_name:
+            img = company_link.select_one("img")
+            company_name = img.get("alt") if img else None
+
+        if not company_name:
+            continue
+
+        website = company_link.get("href")
+        address = location_td.get_text(strip=True) if location_td else None
+
+        leads.append({
+            "company_name": company_name,
+            "website": website,
+            "email": None,
+            "phone": None,
+            "address": address,
+            "source": "directory",
+            "source_url": source_url,
+        })
+
+    return leads
+
+
 PARSERS = {
     "IndiaMART": parse_indiamart_page,
     "TradeIndia": parse_tradeindia_page,
     "ExportersIndia": parse_exportersindia_page,
+    "BiopharmGuy Asia": parse_biopharmguy_page,
+    "BiopharmGuy Middle East": parse_biopharmguy_page,
 }
 
 
