@@ -86,9 +86,46 @@ def parse_tradeindia_page(html: str, source_url: str):
     return leads
 
 
+def parse_exportersindia_page(html: str, source_url: str):
+    """
+    Parse an ExportersIndia category listing page.
+
+    Each card is <div class="l3Inn ...">. Company name + profile link are
+    in .com_address .com_addOth h3._company a.com_nam. Location is in
+    .com_address ._address span._fAdre. Link goes to the company's
+    ExportersIndia profile page, not their external website.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    leads = []
+
+    for card in soup.select("div.l3Inn"):
+        name_link = card.select_one(".com_addOth h3._company a.com_nam")
+        if not name_link:
+            continue
+
+        company_name = name_link.get_text(strip=True)
+        profile_url = name_link.get("href")
+
+        address_span = card.select_one("._address span._fAdre")
+        address = address_span.get_text(strip=True) if address_span else None
+
+        leads.append({
+            "company_name": company_name,
+            "website": profile_url,  # ExportersIndia profile page, not external site
+            "email": None,
+            "phone": None,
+            "address": address,
+            "source": "directory",
+            "source_url": source_url,
+        })
+
+    return leads
+
+
 PARSERS = {
     "IndiaMART": parse_indiamart_page,
     "TradeIndia": parse_tradeindia_page,
+    "ExportersIndia": parse_exportersindia_page,
 }
 
 
